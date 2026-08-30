@@ -33,6 +33,31 @@ def _load(path: str) -> str:
     return p.read_text(encoding="utf-8", errors="replace")
 
 
+def _is_empty_resume(resume: dict) -> bool:
+    """判断解析结果是否"全空"——用于防止后端 AI 解析返回空结构时，
+    import-resume 先清空旧数据再写入空数据，误删用户原有简历。"""
+    basic = resume.get("basic_info") or {}
+    if isinstance(basic, dict):
+        if any(basic.get(f) for f in ("name", "phone", "location", "headline",
+                                      "summary", "industry")):
+            return False
+    for key in ("work_experiences", "projects", "education", "skills",
+                "certificates", "languages"):
+        items = resume.get(key)
+        if isinstance(items, list) and items:
+            return False
+    return True
+
+
+def _guard_empty(resume: dict) -> None:
+    """全空简历直接拒绝导入（避免清空用户已有简历）。"""
+    if _is_empty_resume(resume):
+        raise HipiError(
+            "后端解析结果为空（无基本信息/经历/技能）。为保护已有简历已拒绝导入；"
+            "请提供更完整的简历文本，或用 --json 传入由你确认过的结构化 JSON。"
+        )
+
+
 def _parse_via_backend(text: str, store: TokenStore, account_id: str | None) -> dict:
     """调用后端 /agent/batch-parse-resumes 解析（平台需部署 AI 服务）。"""
     token = get_access_token(store, account_id)
@@ -112,6 +137,7 @@ def main() -> int:
             print(f"↳ 调用后端 AI 解析简历（{len(text)} 字符）…")
             resume = _parse_via_backend(text, store, args.account)
 
+        _guard_empty(resume)
         resp = import_resume(resume, store=store, account_id=args.account)
     except HipiError as exc:
         print(f"❌ {exc}", file=sys.stderr)
