@@ -1,27 +1,12 @@
-"""HiPo Work CLI 统一入口。
+"""HiPo Work CLI — 面向求职者和招聘方的命令行工具集。
 
-把 scripts/ 下的所有命令收敛为一个命令，自动处理模块导入路径，
-避免直接双击脚本或从其他目录调用时的 import 失败。
+安装后提供 `hipo` 命令（等价于仓库根目录时代的 hipo.py）：
 
-用法（从仓库根目录或任意目录）：
-  python3 hipo.py authorize --role candidate
-  python3 hipo.py status
-  python3 hipo.py refresh
-  python3 hipo.py accounts list
-  python3 hipo.py match-jobs --json
-  python3 hipo.py publish-job --title "..." --text "..."
-  python3 hipo.py search "成都 Python 后端"
-  python3 hipo.py match-candidates --text "..."
-  python3 hipo.py market --keyword python
-  python3 hipo.py stats
-  python3 hipo.py resume-extract resume.pdf --out resume.txt
-  python3 hipo.py resume-validate resume.json
-  python3 hipo.py resume-import --json resume.json
-  python3 hipo.py healthcheck
-  python3 hipo.py e2e
-  python3 hipo.py token-sync [--refresh]
+    hipo authorize --role candidate
+    hipo match-jobs
+    hipo publish-job --json examples/job.example.json
 
-等价于直接运行 scripts/ 下的脚本；统一入口会自动转发参数。
+scripts/ 下 16 个子命令模块通过 hipo CLI 统一调度。
 """
 from __future__ import annotations
 
@@ -30,8 +15,9 @@ import subprocess
 import sys
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parent
-SCRIPTS_DIR = REPO_ROOT / "scripts"
+__version__ = "0.1.0"
+
+SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
 
 # 命令名 → 对应脚本文件（不含 .py）
 COMMANDS = {
@@ -82,7 +68,7 @@ AUTH_REQUIRED = {
 
 def _print_help() -> None:
     print("HiPo Work CLI — 统一入口")
-    print("用法: python3 hipo.py <command> [args...]\n")
+    print("用法: hipo <command> [args...]\n")
     print("认证与令牌:")
     for k in ("authorize", "status", "refresh", "token-sync", "accounts"):
         print(f"  {k:<16} {HELP[k]}")
@@ -96,8 +82,8 @@ def _print_help() -> None:
     for k in ("healthcheck", "e2e"):
         print(f"  {k:<16} {HELP[k]}")
     print("\n任何命令都可用 --help 查看详细参数，例如:")
-    print("  python3 hipo.py publish-job --help")
-    print("\n也可以直接运行 scripts/ 下的独立脚本（等价）。")
+    print("  hipo publish-job --help")
+    print("\n也可以直接运行 src/hipowork_cli/scripts/ 下的独立脚本（等价）。")
 
 
 def main() -> int:

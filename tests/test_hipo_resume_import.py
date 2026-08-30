@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "src" / "hipowork_cli" / "scripts"))
 
 from hipo_resume_import import _guard_empty, _is_empty_resume, _load  # noqa: E402
 from hipo_mcp_client import HipiError  # noqa: E402
