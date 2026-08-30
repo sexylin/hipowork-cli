@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+dist/
+build/
+
+# Token / credentials — NEVER commit these
+~/.hipo_mcp_tokens.json
+*.tokens.json
+.hipo_tokens*
+config.yaml
+.env
+*.pem
+*.key
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Test / temp
+/tmp/
+*.log

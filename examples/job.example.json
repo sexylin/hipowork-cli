@@ -1,0 +1,24 @@
+{
+  "title": "Python/FastAPI 后端工程师",
+  "raw_text": "成都 Python/FastAPI 后端开发，3 年以上经验，要求高并发系统经验，熟悉 PostgreSQL，有区块链经验优先",
+  "required": [
+    {"field": "location", "operator": "eq", "value": "成都"},
+    {"field": "experience_years", "operator": "gte", "value": 3}
+  ],
+  "preferred": {
+    "semantic_query": "高并发系统设计，FastAPI 后端，区块链 Web3",
+    "skills": [
+      {"name": "FastAPI", "min_years": 2, "weight": 1.0},
+      {"name": "PostgreSQL", "min_years": 2, "weight": 1.0},
+      {"name": "Python", "min_years": 3, "weight": 1.0}
+    ],
+    "keywords": [
+      {"text": "高并发", "weight": 1.0},
+      {"text": "智能合约", "weight": 0.8}
+    ]
+  },
+  "salary_min": 20,
+  "salary_max": 35,
+  "salary_unit": "monthly",
+  "benefits": ["五险一金", "弹性工作", "远程办公", "年终奖"]
+}

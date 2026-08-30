@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HiPo Work · 授权完成</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --brand:#6366f1; --brand2:#8b5cf6;
+  --bg:#0b0d17; --card:rgba(20,22,38,.86);
+  --border:rgba(255,255,255,.09);
+  --text:#e8eaf2; --dim:#9aa1b8; --radius:20px;
+}
+html,body{height:100%;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  background:var(--bg); min-height:100vh; display:flex; align-items:center; justify-content:center;
+  color:var(--text); overflow:hidden; position:relative;
+}
+body::before{ content:""; position:fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(620px 420px at 12% 18%, rgba(99,102,241,.26), transparent 62%),
+    radial-gradient(720px 520px at 88% 82%, rgba(139,92,246,.20), transparent 62%),
+    radial-gradient(480px 380px at 72% 8%, rgba(34,211,238,.10), transparent 60%); }
+body::after{ content:""; position:fixed; inset:0; z-index:0; opacity:.45;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:46px 46px;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000,transparent 78%);
+  mask-image:radial-gradient(circle at 50% 50%,#000,transparent 78%); }
+.wrap{ position:relative; z-index:1; width:100%; max-width:440px; padding:24px; }
+.card{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  padding:38px 34px 32px;
+  box-shadow:0 28px 90px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.07);
+  -webkit-backdrop-filter:blur(22px); backdrop-filter:blur(22px); }
+.brand{ display:flex; align-items:center; gap:12px; margin-bottom:22px; }
+.logo{ width:44px; height:44px; border-radius:13px; flex:none;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  box-shadow:0 8px 24px rgba(99,102,241,.45), inset 0 1px 0 rgba(255,255,255,.3);
+  display:flex; align-items:center; justify-content:center; }
+.logo svg{ width:24px; height:24px; }
+.brand h1{ font-size:20px; font-weight:700; letter-spacing:.2px; }
+.brand p{ font-size:13px; color:var(--dim); margin-top:2px; }
+.ok{ display:flex; align-items:center; gap:14px; margin-bottom:24px;
+  background:rgba(16,185,129,.10); border:1px solid rgba(16,185,129,.25);
+  border-radius:16px; padding:16px 18px; }
+.ok .badge{ width:40px; height:40px; border-radius:50%; flex:none;
+  background:linear-gradient(135deg,#10b981,#059669);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 18px rgba(16,185,129,.35); }
+.ok .badge svg{ width:22px; height:22px; }
+.ok h2{ font-size:17px; font-weight:700; }
+.ok p{ font-size:13px; color:var(--dim); margin-top:3px; line-height:1.5; }
+.next{ margin-bottom:8px; }
+.next .t{ font-size:13px; font-weight:700; color:var(--dim); text-transform:uppercase;
+  letter-spacing:1.2px; margin-bottom:14px; }
+.next .p{ font-size:15px; font-weight:700; margin-bottom:16px; color:#a5b4fc; }
+.next ul{ list-style:none; }
+.next li{ display:flex; align-items:center; gap:10px; padding:9px 0;
+  font-size:13.5px; color:var(--text); line-height:1.5; }
+.next li .dot{ width:6px; height:6px; border-radius:50%; flex:none;
+  background:linear-gradient(135deg,var(--brand),var(--brand2)); }
+.foot{ text-align:center; font-size:12px; color:var(--dim); margin-top:22px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>
+      </div>
+      <div><h1>HiPo Work</h1><p>AI 招聘平台</p></div>
+    </div>
+    <div class="ok">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <div>
+        <h2>授权完成</h2>
+        <p>可以关闭此页面，返回客户端继续操作</p>
+      </div>
+    </div>
+    <div class="next">
+      <div class="t">接下来你可以</div>
+      <div class="p">__PRIMARY__</div>
+      <ul>__STEPS__</ul>
+    </div>
+    <div class="foot">已安全连接 HiPo Work MCP 服务</div>
+  </div>
+</div>
+</body>
+</html>

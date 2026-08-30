@@ -1,0 +1,2 @@
+# 可选：PDF 简历提取依赖（仅 hipo_resume_extract.py 需要）
+pymupdf>=1.24

@@ -1,0 +1,63 @@
+{
+  "basic_info": {
+    "name": "张三",
+    "location": "成都",
+    "headline": "区块链全栈工程师",
+    "summary": "5 年全栈开发经验，专注区块链与 Web3，熟悉 Solidity 智能合约、Python/FastAPI 后端和 React 前端，主导过多个 DeFi 项目从 0 到 1。",
+    "industry": "tech"
+  },
+  "work_experiences": [
+    {
+      "company": "某科技公司",
+      "role": "高级全栈工程师",
+      "start_date": "2022-03",
+      "end_date": "2026-08",
+      "duration_months": 53,
+      "industry": "tech",
+      "responsibilities": ["负责核心后端服务设计与开发", "主导智能合约安全审计流程"],
+      "achievements": ["支撑百万级用户的高并发系统，QPS 提升 40%"],
+      "tech_stack": ["Python", "FastAPI", "PostgreSQL", "Redis", "Solidity"],
+      "team_size": 8,
+      "ai_summary": "5 年全栈经验，主导多个区块链项目"
+    }
+  ],
+  "projects": [
+    {
+      "name": "DeFi 借贷协议",
+      "role": "核心开发者",
+      "start_date": "2023-01",
+      "end_date": "2024-06",
+      "description": "基于 Solidity 的链上借贷协议，支持多币种抵押借贷与清算",
+      "responsibilities": ["设计智能合约架构", "实现清算机器人"],
+      "achievements": ["TVL 峰值 5000 万美元", "通过第三方安全审计"],
+      "tech_stack": ["Solidity", "Hardhat", "Web3.js"],
+      "project_url": "https://github.com/example/defi-lending",
+      "ai_summary": "链上借贷协议，TVL 峰值 5000 万美元"
+    }
+  ],
+  "education": [
+    {
+      "school": "某大学",
+      "degree": "本科",
+      "major": "计算机科学与技术",
+      "start_year": 2015,
+      "end_year": 2019,
+      "gpa": 3.6,
+      "school_type": "211",
+      "ai_summary": "计算机本科，GPA 3.6"
+    }
+  ],
+  "skills": [
+    {"name": "Python", "category": "programming_language", "level": 5, "years": 5, "context": "后端开发，AI 服务"},
+    {"name": "Solidity", "category": "programming_language", "level": 4, "years": 3, "context": "智能合约开发"},
+    {"name": "FastAPI", "category": "framework", "level": 4, "years": 3, "context": "后端 API 服务"},
+    {"name": "PostgreSQL", "category": "tool", "level": 4, "years": 4, "context": "数据存储，pgvector 向量检索"}
+  ],
+  "certificates": [
+    {"name": "区块链工程师认证", "issuer": "某机构", "year": 2023}
+  ],
+  "languages": [
+    {"language": "中文", "level": "native"},
+    {"language": "英语", "level": "business"}
+  ]
+}
