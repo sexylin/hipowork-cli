@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hipowork-cli"
-version = "0.1.0"
+version = "0.2.0"
 description = "HiPo Work CLI — Agent 友好的招聘平台命令行工具集（OAuth 授权 / 岗位发布 / 候选人匹配 / 简历导入）"
 readme = "README.md"
 requires-python = ">=3.10"
