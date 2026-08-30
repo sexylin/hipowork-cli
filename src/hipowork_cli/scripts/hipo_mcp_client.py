@@ -106,6 +106,14 @@ def publish_job(title: str, required: list | None = None, preferred: dict | None
     return _req("POST", "/agent/publish-job", token=token, body=body)
 
 
+def close_job(job_id: str,
+              store: TokenStore | None = None, account_id: str | None = None) -> dict:
+    """招聘方：关闭已发布的招聘岗位（PUT /employer/requirements/{job_id}）。"""
+    token = get_access_token(store, account_id)
+    return _req("PUT", f"/employer/requirements/{job_id}", token=token,
+                body={"status": "closed"})
+
+
 def search_candidates(query: str, max_results: int = 10,
                       store: TokenStore | None = None, account_id: str | None = None) -> dict:
     """招聘方：自然语言搜索候选人（POST /search）。"""

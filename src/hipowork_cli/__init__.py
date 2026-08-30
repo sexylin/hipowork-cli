@@ -28,6 +28,7 @@ COMMANDS = {
     "accounts": "hipo_accounts",
     "match-jobs": "hipo_match_jobs",
     "publish-job": "hipo_publish_job",
+    "close-job": "hipo_close_job",
     "search": "hipo_search_candidates",
     "match-candidates": "hipo_match_candidates",
     "market": "hipo_market",
@@ -48,6 +49,7 @@ HELP = {
     "accounts": "多账户管理（list/switch/delete）",
     "match-jobs": "求职者：匹配岗位",
     "publish-job": "招聘方：发布岗位",
+    "close-job": "招聘方：关闭已发布的岗位",
     "search": "招聘方：自然语言搜索候选人",
     "match-candidates": "招聘方：结构化/自然语言匹配候选人",
     "market": "招聘方：人才市场分析",
@@ -62,7 +64,7 @@ HELP = {
 # 需要前置授权的命令（帮助提示用）
 AUTH_REQUIRED = {
     "status", "refresh", "token-sync", "accounts", "match-jobs", "publish-job",
-    "search", "match-candidates", "market", "stats", "resume-import", "e2e",
+    "close-job", "search", "match-candidates", "market", "stats", "resume-import", "e2e",
 }
 
 
@@ -73,7 +75,7 @@ def _print_help() -> None:
     for k in ("authorize", "status", "refresh", "token-sync", "accounts"):
         print(f"  {k:<16} {HELP[k]}")
     print("\n招聘方:")
-    for k in ("publish-job", "search", "match-candidates", "market", "stats"):
+    for k in ("publish-job", "close-job", "search", "match-candidates", "market", "stats"):
         print(f"  {k:<16} {HELP[k]}")
     print("\n求职者:")
     for k in ("match-jobs", "resume-extract", "resume-validate", "resume-import"):

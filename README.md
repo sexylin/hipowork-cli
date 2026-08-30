@@ -73,6 +73,7 @@ python3.13 -m venv .venv
 | 命令 | 说明 |
 |---|---|
 | `hipo publish-job --title x --text "..." [--json file]` | 发布岗位 |
+| `hipo close-job <job_id>` | 关闭已发布的岗位（关闭后不再参与匹配） |
 | `hipo search "自然语言描述" [--max n]` | 自然语言搜索候选人 |
 | `hipo match-candidates --text "..." / --json cond.json / --job <id>` | 结构化匹配候选人 |
 | `hipo market --keyword python [--industry tech]` | 人才市场分析 |
@@ -119,6 +120,7 @@ src/hipowork_cli/
     hipo_mcp_client.py      # 业务封装：匹配/发布/搜索/统计/导入等
     hipo_match_jobs.py      # 求职者匹配岗位
     hipo_publish_job.py     # 发布岗位
+    hipo_close_job.py       # 关闭岗位
     hipo_search_candidates.py  # 搜索候选人
     hipo_match_candidates.py   # 结构化匹配候选人
     hipo_market.py          # 市场分析
