@@ -178,12 +178,25 @@ async def run(port: int, role: str, email: str) -> int:
                     first = (t.description or "").splitlines()[0]
                     print(f"  - {t.name}: {first}")
 
-                # token 已在 storage 落盘；补记 email/role 到账户信息
+                # token 已在 storage 落盘；补记 email/role 到账户信息。
+                # P1-12: 角色以服务端 /auth/me 返回的真实角色为准（本地 --role
+                # 只是授权页初选，服务端可能因角色选择页/已有档案而不同）。
                 acc = store.get_account()
                 if acc is not None:
                     if email:
                         acc["email"] = email
-                    acc["role"] = role
+                    try:
+                        from hipo_auth import api_request, DEFAULT_API_BASE
+                        me = api_request("GET", "/auth/me", token=store.tokens().get("access_token"), api_base=DEFAULT_API_BASE)
+                        server_role = str(me.get("role") or "").strip()
+                        if server_role:
+                            acc["role"] = server_role
+                        if me.get("email"):
+                            acc["email"] = me["email"]
+                    except Exception as exc:  # noqa: BLE001
+                        # /auth/me 不可用时回退到本地角色（降级但不阻塞授权完成）
+                        print(f"  ⚠️ 读取服务端角色失败，回退本地角色: {type(exc).__name__}: {str(exc)[:200]}")
+                        acc["role"] = role
                     store.set_account(store.default_account(), acc)
                 print("\n✅ 授权完成，token 已保存到本地仓库。")
                 print("   后续可用 hipo_token_status.py / hipo_token_sync.py / hipo_mcp_client.py 复用。")

@@ -128,6 +128,8 @@ def main() -> int:
     print("\n== 2/3 REST /auth/me ==")
     try:
         me = api_request("GET", "/auth/me", token=token, api_base=DEFAULT_API_BASE)
+        # P1-12: 以服务端真实角色为准（本地 store 角色可能因未同步而过期）
+        server_role = str(me.get("role") or "").strip() or (store.role() or "candidate")
         print(f"  ✅ /auth/me OK — {me.get('email')} ({me.get('role')})")
     except Exception as exc:  # noqa: BLE001
         print(f"  ❌ /auth/me 失败: {exc}", file=sys.stderr)
@@ -140,7 +142,7 @@ def main() -> int:
 
     print("\n== 3/3 MCP 会话 ==")
     try:
-        rc = asyncio.run(_mcp_smoke(role))
+        rc = asyncio.run(_mcp_smoke(server_role))
         print("\n✅ 端到端冒烟通过。")
         return rc
     except Exception as exc:  # noqa: BLE001

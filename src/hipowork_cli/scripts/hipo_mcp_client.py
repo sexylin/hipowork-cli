@@ -88,11 +88,17 @@ def match_jobs_for_me(store: TokenStore | None = None, account_id: str | None = 
 
 def publish_job(title: str, required: list | None = None, preferred: dict | None = None,
                 raw_text: str = "", salary_min: int | None = None,
-                salary_max: int | None = None, salary_unit: str = "monthly",
+                salary_max: int | None = None, salary_unit: str | None = "monthly",
                 benefits: list | None = None,
                 store: TokenStore | None = None, account_id: str | None = None) -> dict:
-    """招聘方：发布结构化岗位（POST /agent/publish-job）。"""
+    """招聘方：发布结构化岗位（POST /agent/publish-job）。
+
+    P1-17 薪资面议契约：salary_min 与 salary_max 均为空 → 面议 → salary_unit 传 None；
+    只有提供了下限或上限时才带 unit。
+    """
     token = get_access_token(store, account_id)
+    # 面议统一为 None（与后端 salary_unit=NULL=面议 语义一致）
+    effective_unit = salary_unit if (salary_min is not None or salary_max is not None) else None
     body = {
         "title": title,
         "raw_text": raw_text or "",
@@ -100,7 +106,7 @@ def publish_job(title: str, required: list | None = None, preferred: dict | None
         "preferred": preferred or {},
         "salary_min": salary_min,
         "salary_max": salary_max,
-        "salary_unit": salary_unit or "monthly",
+        "salary_unit": effective_unit,
         "benefits": benefits or [],
     }
     return _req("POST", "/agent/publish-job", token=token, body=body)
