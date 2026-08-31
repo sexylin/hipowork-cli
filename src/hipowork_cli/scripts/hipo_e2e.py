@@ -34,9 +34,10 @@ def _check_token(store: TokenStore) -> str | None:
 
 async def _mcp_smoke(role: str | None) -> int:
     """通过 MCP SDK 建立会话并调用只读工具。"""
+    import httpx2
     from mcp import ClientSession
     from mcp.client.auth import OAuthClientProvider
-    from mcp.client.streamable_http import streamablehttp_client
+    from mcp.client.streamable_http import streamable_http_client, create_mcp_http_client
     from mcp.shared.auth import OAuthClientMetadata
 
     store = TokenStore()
@@ -84,25 +85,26 @@ async def _mcp_smoke(role: str | None) -> int:
     )
     token_was_used = False
 
-    async with streamablehttp_client(DEFAULT_MCP_URL, timeout=30, auth=oauth) as (read, write, _sid):
-        async with ClientSession(read, write) as session:
-            init = await session.initialize()
-            print(f"  ✅ MCP INIT OK — {init.serverInfo.name} {init.serverInfo.version}")
-            tools = await session.list_tools()
-            names = [t.name for t in tools.tools]
-            print(f"  ✅ TOOLS ({len(names)}): {', '.join(names)}")
+    async with create_mcp_http_client(auth=oauth, timeout=httpx2.Timeout(30.0, read=600.0)) as http_client:
+        async with streamable_http_client(DEFAULT_MCP_URL, http_client=http_client) as (read, write):
+            async with ClientSession(read, write) as session:
+                init = await session.initialize()
+                print(f"  ✅ MCP INIT OK — {init.server_info.name} {init.server_info.version}")
+                tools = await session.list_tools()
+                names = [t.name for t in tools.tools]
+                print(f"  ✅ TOOLS ({len(names)}): {', '.join(names)}")
 
-            tool_name = None
-            if role == "employer":
-                tool_name = "get_stats"
-            else:
-                tool_name = "match_jobs_for_me"
-            if tool_name not in names:
-                print(f"  ⚠️ 工具 {tool_name} 不在列表中，跳过工具调用。")
-                return 1
-            result = await session.call_tool(tool_name, {})
-            print(f"  ✅ 调用 {tool_name} 成功: {str(result)[:300]}")
-            return 0
+                tool_name = None
+                if role == "employer":
+                    tool_name = "get_stats"
+                else:
+                    tool_name = "match_jobs_for_me"
+                if tool_name not in names:
+                    print(f"  ⚠️ 工具 {tool_name} 不在列表中，跳过工具调用。")
+                    return 1
+                result = await session.call_tool(tool_name, {})
+                print(f"  ✅ 调用 {tool_name} 成功: {str(result)[:300]}")
+                return 0
 
 
 def main() -> int:

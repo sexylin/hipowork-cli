@@ -129,22 +129,23 @@ async def redirect_handler(url: str) -> None:
 
 
 async def run(port: int, role: str, email: str) -> int:
+    import httpx2
     from mcp import ClientSession
     from mcp.client.auth import OAuthClientProvider
-    from mcp.client.streamable_http import streamablehttp_client
-    from mcp.shared.auth import OAuthClientMetadata
+    from mcp.client.streamable_http import streamable_http_client, create_mcp_http_client
+    from mcp.shared.auth import OAuthClientMetadata, AuthorizationCodeResult
 
     cb = CallbackServer(port, role)
     cb.start()
 
-    async def callback_handler() -> tuple[str, str | None]:
+    async def callback_handler() -> AuthorizationCodeResult:
         print("\n等待浏览器授权回调...")
         await asyncio.to_thread(cb.received.wait, 600)
         code, state = cb.code, cb.state
         if not code:
             raise RuntimeError("回调未收到授权码（可能超时或用户取消）")
         print(f"收到回调 code={code[:12]}... state={state[:12]}...")
-        return code, state
+        return AuthorizationCodeResult(code=code, state=state)
 
     metadata = OAuthClientMetadata(
         client_name="hipowork-cli",
@@ -162,45 +163,46 @@ async def run(port: int, role: str, email: str) -> int:
         storage=_StorageAdapter(store),
         redirect_handler=redirect_handler,
         callback_handler=callback_handler,
-        timeout=600,
     )
 
     print(f"连接 {DEFAULT_MCP_URL} ...")
     try:
-        async with streamablehttp_client(DEFAULT_MCP_URL, timeout=30, auth=oauth) as (read, write, _sid):
-            async with ClientSession(read, write) as session:
-                init = await session.initialize()
-                print("\nMCP INIT OK")
-                print("  server:", init.serverInfo.name, init.serverInfo.version)
-                tools = await session.list_tools()
-                print(f"\nTOOLS ({len(tools.tools)}):")
-                for t in tools.tools:
-                    first = (t.description or "").splitlines()[0]
-                    print(f"  - {t.name}: {first}")
+        http_client = create_mcp_http_client(auth=oauth, timeout=httpx2.Timeout(30.0, read=600.0))
+        async with http_client:
+            async with streamable_http_client(DEFAULT_MCP_URL, http_client=http_client) as (read, write):
+                async with ClientSession(read, write) as session:
+                    init = await session.initialize()
+                    print("\nMCP INIT OK")
+                    print("  server:", init.server_info.name, init.server_info.version)
+                    tools = await session.list_tools()
+                    print(f"\nTOOLS ({len(tools.tools)}):")
+                    for t in tools.tools:
+                        first = (t.description or "").splitlines()[0]
+                        print(f"  - {t.name}: {first}")
 
-                # token 已在 storage 落盘；补记 email/role 到账户信息。
-                # P1-12: 角色以服务端 /auth/me 返回的真实角色为准（本地 --role
-                # 只是授权页初选，服务端可能因角色选择页/已有档案而不同）。
-                acc = store.get_account()
-                if acc is not None:
-                    if email:
-                        acc["email"] = email
-                    try:
-                        from hipo_auth import api_request, DEFAULT_API_BASE
-                        me = api_request("GET", "/auth/me", token=store.tokens().get("access_token"), api_base=DEFAULT_API_BASE)
-                        server_role = str(me.get("role") or "").strip()
-                        if server_role:
-                            acc["role"] = server_role
-                        if me.get("email"):
-                            acc["email"] = me["email"]
-                    except Exception as exc:  # noqa: BLE001
-                        # /auth/me 不可用时回退到本地角色（降级但不阻塞授权完成）
-                        print(f"  ⚠️ 读取服务端角色失败，回退本地角色: {type(exc).__name__}: {str(exc)[:200]}")
-                        acc["role"] = role
-                    store.set_account(store.default_account(), acc)
-                print("\n✅ 授权完成，token 已保存到本地仓库。")
-                print("   后续可用 hipo_token_status.py / hipo_token_sync.py / hipo_mcp_client.py 复用。")
-                return 0
+                    # token 已在 storage 落盘；补记 email/role 到账户信息。
+                    # P1-12: 角色以服务端 /auth/me 返回的真实角色为准（本地 --role
+                    # 只是授权页初选，服务端可能因角色选择页/已有档案而不同）。
+                    acc = store.get_account()
+                    if acc is not None:
+                        if email:
+                            acc["email"] = email
+                        try:
+                            from hipo_auth import api_request, DEFAULT_API_BASE
+                            me = api_request("GET", "/auth/me", token=store.tokens().get("access_token"), api_base=DEFAULT_API_BASE)
+                            server_role = str(me.get("role") or "").strip()
+                            if server_role:
+                                acc["role"] = server_role
+                            if me.get("email"):
+                                acc["email"] = me["email"]
+                        except Exception as exc:  # noqa: BLE001
+                            # /auth/me 不可用时回退到本地角色（降级但不阻塞授权完成）
+                            print(f"  ⚠️ 读取服务端角色失败，回退本地角色: {type(exc).__name__}: {str(exc)[:200]}")
+                            acc["role"] = role
+                        store.set_account(store.default_account(), acc)
+                    print("\n✅ 授权完成，token 已保存到本地仓库。")
+                    print("   后续可用 hipo_token_status.py / hipo_token_sync.py / hipo_mcp_client.py 复用。")
+                    return 0
     except Exception as exc:
         print(f"授权失败: {type(exc).__name__}: {str(exc)[:800]}")
         return 1
