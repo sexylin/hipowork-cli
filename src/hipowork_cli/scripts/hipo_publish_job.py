@@ -41,7 +41,7 @@ def main() -> int:
     parser.add_argument("--json", default="", help="结构化岗位 JSON 文件路径")
     parser.add_argument("--salary-min", type=int, default=None, help="月薪下限（k）")
     parser.add_argument("--salary-max", type=int, default=None, help="月薪上限（k）")
-    parser.add_argument("--salary-unit", choices=["monthly", "yearly"], default="monthly")
+    parser.add_argument("--salary-unit", choices=["monthly", "yearly"], default=None, help="薪资单位（缺省时取 JSON 的 salary_unit，再无则 monthly）")
     parser.add_argument("--benefit", action="append", default=[], help="福利标签（可重复）")
     parser.add_argument("--account", default=None, help="账户 ID")
     parser.add_argument("--file", default=None, help="token 仓库文件路径")
@@ -73,7 +73,9 @@ def main() -> int:
             raw_text=args.text or job_data.get("raw_text", ""),
             salary_min=args.salary_min if args.salary_min is not None else job_data.get("salary_min"),
             salary_max=args.salary_max if args.salary_max is not None else job_data.get("salary_max"),
-            salary_unit=args.salary_unit,
+            # 修复：CLI 未显式传 --salary-unit 时回退到 JSON 的 salary_unit，再无则 monthly。
+            # 此前只传 args.salary_unit（默认 monthly），JSON 里的 yearly 被静默丢弃。
+            salary_unit=args.salary_unit or job_data.get("salary_unit") or "monthly",
             benefits=args.benefit or job_data.get("benefits") or None,
             store=store,
             account_id=args.account,
