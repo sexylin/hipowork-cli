@@ -39,7 +39,7 @@ def main() -> int:
         print_json(data)
         return 0
 
-    print(f"\n📋 为你匹配到 {data.get('total_matches', 0)} 个岗位（今日还可投递 {data.get('daily_remaining', 0)} 次）\n")
+    print(f"\n📋 为你匹配到 {data.get('total_matches', 0)} 个岗位\n")
     results = data.get("results") or []
     if not results:
         print("  暂无匹配岗位。可先导入简历（hipo_resume_import.py），或稍后再试。")

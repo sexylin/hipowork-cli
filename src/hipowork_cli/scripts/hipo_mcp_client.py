@@ -210,7 +210,6 @@ def _summarize_job_matches(data: dict) -> dict:
         })
     return {
         "total_matches": data.get("total_matches"),
-        "daily_remaining": data.get("daily_remaining"),
         "results": slim,
     }
 
