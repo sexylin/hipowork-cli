@@ -200,6 +200,29 @@ async def run(port: int, role: str, email: str) -> int:
                             print(f"  ⚠️ 读取服务端角色失败，回退本地角色: {type(exc).__name__}: {str(exc)[:200]}")
                             acc["role"] = role
                         store.set_account(store.default_account(), acc)
+
+                    # CLI/MCP 授权成功 → 桥接 Web 登录态：自动打开 /oauth/handoff，
+                    # 前端从 URL fragment 的 base64url payload 解码 token 写入 localStorage
+                    # 并跳转角色 profile。fragment 不发送到服务器，token 不经后端中转。
+                    try:
+                        import base64 as _b64
+                        toks = store.tokens()
+                        cinfo = store.client_info()
+                        if toks.get("access_token") and toks.get("refresh_token") and cinfo.get("client_id"):
+                            payload_json = json.dumps({
+                                "access_token": toks["access_token"],
+                                "refresh_token": toks["refresh_token"],
+                                "client_id": cinfo["client_id"],
+                                "expires_in": toks.get("expires_in") or 900,
+                            }).encode()
+                            # base64url（无填充，与前端 atob 前补 '=' 的逻辑匹配）
+                            payload_b64 = _b64.urlsafe_b64encode(payload_json).rstrip(b"=").decode()
+                            handoff_url = f"https://www.hipowork.com/oauth/handoff#payload={payload_b64}"
+                            webbrowser.open(handoff_url)
+                            print("\n🌐 已在浏览器打开 HiPo Work Web 登录态并跳转到个人中心。")
+                    except Exception as exc:  # noqa: BLE001
+                        print(f"  ⚠️ 打开 Web 登录态失败（不影响 CLI 授权）：{type(exc).__name__}: {str(exc)[:200]}")
+
                     print("\n✅ 授权完成，token 已保存到本地仓库。")
                     print("   后续可用 hipo_token_status.py / hipo_token_sync.py / hipo_mcp_client.py 复用。")
                     return 0
