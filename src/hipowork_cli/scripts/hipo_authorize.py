@@ -201,17 +201,19 @@ async def run(port: int, role: str, email: str) -> int:
                             acc["role"] = role
                         store.set_account(store.default_account(), acc)
 
-                    # CLI/MCP 授权成功 → 桥接 Web 登录态：自动打开 /oauth/handoff，
-                    # 前端从 URL fragment 的 base64url payload 解码 token 写入 localStorage
-                    # 并跳转角色 profile。fragment 不发送到服务器，token 不经后端中转。
+                    # CLI/MCP 授权成功 → 桥接 Web 登录态：自动打开 /oauth/handoff。
+                    # 方案A：payload 只传 access_token + client_id，不传 refresh_token。
+                    # CLI 的 refresh 是旋转式一次性凭证（任一端刷新都会作废旧值），
+                    # 与浏览器共享同一根 refresh 会在下一次刷新时互相作废（does not
+                    # exist）。因此这里给浏览器的是"限时浏览会话"：access 过期后前端
+                    # 不再自动刷新，引导走标准 PKCE 拿 Web 自己的链。
                     try:
                         import base64 as _b64
                         toks = store.tokens()
                         cinfo = store.client_info()
-                        if toks.get("access_token") and toks.get("refresh_token") and cinfo.get("client_id"):
+                        if toks.get("access_token") and cinfo.get("client_id"):
                             payload_json = json.dumps({
                                 "access_token": toks["access_token"],
-                                "refresh_token": toks["refresh_token"],
                                 "client_id": cinfo["client_id"],
                                 "expires_in": toks.get("expires_in") or 900,
                             }).encode()
@@ -219,7 +221,7 @@ async def run(port: int, role: str, email: str) -> int:
                             payload_b64 = _b64.urlsafe_b64encode(payload_json).rstrip(b"=").decode()
                             handoff_url = f"https://www.hipowork.com/oauth/handoff#payload={payload_b64}"
                             webbrowser.open(handoff_url)
-                            print("\n🌐 已在浏览器打开 HiPo Work Web 登录态并跳转到个人中心。")
+                            print("\n🌐 已在浏览器打开 HiPo Work Web 登录态并跳转到个人中心（限时会话，access 过期后引导重新登录）。")
                     except Exception as exc:  # noqa: BLE001
                         print(f"  ⚠️ 打开 Web 登录态失败（不影响 CLI 授权）：{type(exc).__name__}: {str(exc)[:200]}")
 
