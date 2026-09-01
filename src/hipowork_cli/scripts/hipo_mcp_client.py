@@ -174,8 +174,14 @@ def market_analysis(keyword: str | None = None, industry: str | None = None,
 
 
 def import_resume(resume_data: dict, store: TokenStore | None = None,
-                  account_id: str | None = None) -> dict:
-    """简历导入（POST /agent/import-resume），传入 Agent 解析好的结构化 JSON。"""
+                  account_id: str | None = None,
+                  attachment_path: str | None = None) -> dict:
+    """简历导入（POST /agent/import-resume），传入 Agent 解析好的结构化 JSON。
+
+    可选 attachment_path：原始简历文件路径（PDF/DOCX）。文件将被 base64 编码
+    随导入请求一起发送，后端存档到对象存储（COS）供 HR 查看。读取失败时抛出
+    HipiError，不静默忽略。
+    """
     token = get_access_token(store, account_id)
     body = {
         "basic_info": resume_data.get("basic_info", {}),
@@ -186,6 +192,20 @@ def import_resume(resume_data: dict, store: TokenStore | None = None,
         "certificates": resume_data.get("certificates", []),
         "languages": resume_data.get("languages", []),
     }
+    if attachment_path:
+        import base64
+        import os
+        from pathlib import Path
+        p = Path(attachment_path)
+        if not p.exists():
+            raise HipiError(f"附件文件不存在: {p}")
+        raw = p.read_bytes()
+        if len(raw) > 20 * 1024 * 1024:
+            raise HipiError("附件过大，最大 20MB")
+        ext = os.path.splitext(p.name)[1].lstrip(".").lower()
+        body["resume_file_name"] = p.name
+        body["resume_file_type"] = ext
+        body["resume_file_base64"] = base64.b64encode(raw).decode()
     return _req("POST", "/agent/import-resume", token=token, body=body)
 
 

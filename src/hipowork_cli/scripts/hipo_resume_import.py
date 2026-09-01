@@ -97,6 +97,8 @@ def main() -> int:
     parser.add_argument("--json-out", action="store_true", help="输出原始 JSON 响应")
     parser.add_argument("--account", default=None, help="账户 ID")
     parser.add_argument("--file", default=None, help="token 仓库文件路径")
+    parser.add_argument("--attachment", default=None,
+                        help="原始简历附件文件路径（PDF/DOCX），随导入存档到对象存储供 HR 查看")
     args = parser.parse_args()
 
     store = TokenStore(args.file)
@@ -138,7 +140,10 @@ def main() -> int:
             resume = _parse_via_backend(text, store, args.account)
 
         _guard_empty(resume)
-        resp = import_resume(resume, store=store, account_id=args.account)
+        resp = import_resume(resume, store=store, account_id=args.account,
+                             attachment_path=args.attachment)
+        if args.attachment:
+            print(f"↳ 附件已存档: {args.attachment}")
     except HipiError as exc:
         print(f"❌ {exc}", file=sys.stderr)
         return 1
