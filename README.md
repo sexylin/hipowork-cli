@@ -36,8 +36,8 @@ hipo publish-job --json examples/job.example.json     # 招聘方发布岗位
 hipo search "成都 Python 后端"
 ```
 
-> 提示：授权流程需要浏览器完成邮箱验证码登录；授权完成后 token 自动刷新，
-> 无需再手动处理。token 只存在本机 `~/.hipo_mcp_tokens.json`（0600 权限）。
+> 提示：首次授权需要浏览器完成邮箱验证码登录；如果你已在 HiPo Work Web 端登录，授权页会直接显示确认授权，免重复输入邮箱和验证码。授权完成后 token 自动刷新，
+> 无需再手动处理。CLI 授权成功还会自动打开 Web handoff 页面并进入对应 Profile；浏览器侧只接收限时 access token，不共享 CLI 的 refresh token。token 只存在本机 `~/.hipo_mcp_tokens.json`（0600 权限）。
 
 ### 开发模式（从源码运行）
 
