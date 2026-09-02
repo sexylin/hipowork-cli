@@ -2,7 +2,7 @@
 
 HiPo Work 客户端命令行工具集 — 面向求职者和招聘方的纯 Python 脚本集，
 直接对接 https://api.hipowork.com 后端 REST API（底层与 MCP 工具同一套接口），
-无需浏览器、无需配置 API Key，用 OAuth 授权后即可在终端完成简历导入、岗位发布、
+通过 OAuth 授权后即可在终端完成简历导入、岗位发布、
 候选人匹配、市场分析等操作。
 
 ## 安装
