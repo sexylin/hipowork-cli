@@ -10,6 +10,8 @@
 [![OAuth 2.0](https://img.shields.io/badge/Auth-OAuth2.0-green)](https://oauth.net/2/)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+[中文文档](README.md) · [English](README_EN.md)
+
 **官网：** [https://hipowork.com](https://hipowork.com) · [https://www.hipowork.com](https://www.hipowork.com)  
 **远程 MCP 服务：** `https://mcp.hipowork.com/mcp`  
 **API 服务端点：** `https://api.hipowork.com`
