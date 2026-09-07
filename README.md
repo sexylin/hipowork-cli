@@ -15,14 +15,14 @@ pip install hipowork-cli
 pip install hipowork-cli[resume]
 ```
 
-安装后提供 `hipo` 命令，可从任意目录运行。
+安装后提供 `hipo` 和 `hipowork-cli` 两个可执行命令，二者完全等价。
 
 ## 快速开始
 
 ```bash
-# 1. 授权（浏览器完成邮箱验证码登录）
-hipo authorize --role candidate     # 求职者授权
-# hipo authorize --role employer    # 招聘方授权
+# 1. 登录与授权（终端会打印授权引导并在浏览器完成邮箱验证）
+hipowork-cli login --role candidate     # 求职者登录（或: hipo login --role candidate）
+# hipowork-cli login --role employer    # 招聘方登录
 
 # 2. 看授权状态 / 刷新 / 多账户
 hipo status
@@ -54,7 +54,8 @@ python3.13 -m venv .venv
 ### 认证与令牌
 | 命令 | 说明 |
 |---|---|
-| `hipo authorize --role candidate/employer [--email x]` | OAuth 授权（PKCE + 邮箱验证码） |
+| `hipowork-cli login --role candidate/employer` | 登录/授权（引导终端与浏览器完成邮箱验证） |
+| `hipo authorize --role candidate/employer [--email x]` | OAuth 授权（login 别名，PKCE + 邮箱验证码） |
 | `hipo status` | 查看当前 token：角色/scope/过期时间 |
 | `hipo refresh` | 强制刷新 access_token |
 | `hipo token-sync [--refresh]` | 导出 token 到浏览器 localStorage（4 个 base64） |

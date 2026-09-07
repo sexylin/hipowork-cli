@@ -117,13 +117,13 @@ class CallbackServer:
 
 
 async def redirect_handler(url: str) -> None:
-    print("\n=== 请在浏览器完成授权（邮箱验证码登录）===")
-    print("授权 URL:")
-    print(url)
-    print()
+    print("\nTo authenticate, please:")
+    print(f"1. Go to: {url}")
+    print("\n2. Complete email verification and authorize in the browser.")
+    print("3. Waiting for authentication callback...\n")
     try:
         webbrowser.open(url)
-        print("(已尝试自动打开浏览器；若未打开请手动复制上面的 URL)")
+        print("(Attempting to automatically open the browser; if it doesn't open, copy and paste the URL above.)")
     except Exception:
         pass
 

@@ -15,12 +15,13 @@ import subprocess
 import sys
 from pathlib import Path
 
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 SCRIPTS_DIR = Path(__file__).resolve().parent / "scripts"
 
 # 命令名 → 对应脚本文件（不含 .py）
 COMMANDS = {
+    "login": "hipo_authorize",
     "authorize": "hipo_authorize",
     "status": "hipo_token_status",
     "refresh": "hipo_token_refresh",
@@ -42,7 +43,8 @@ COMMANDS = {
 
 # 各命令的一句话说明（help 输出用）
 HELP = {
-    "authorize": "OAuth 授权（打开浏览器完成邮箱验证码登录）",
+    "login": "登录/授权（在终端提供链接并在浏览器完成邮箱验证）",
+    "authorize": "OAuth 授权（login 的别名）",
     "status": "查看 token 状态（角色/scope/过期）",
     "refresh": "强制刷新 token",
     "token-sync": "导出 token 到浏览器 localStorage（4 个 base64）",
@@ -72,7 +74,7 @@ def _print_help() -> None:
     print("HiPo Work CLI — 统一入口")
     print("用法: hipo <command> [args...]\n")
     print("认证与令牌:")
-    for k in ("authorize", "status", "refresh", "token-sync", "accounts"):
+    for k in ("login", "authorize", "status", "refresh", "token-sync", "accounts"):
         print(f"  {k:<16} {HELP[k]}")
     print("\n招聘方:")
     for k in ("publish-job", "close-job", "search", "match-candidates", "market", "stats"):
