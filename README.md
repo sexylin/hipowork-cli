@@ -1,150 +1,181 @@
 # hipowork-cli
 
-HiPo Work 客户端命令行工具集 — 面向求职者和招聘方的纯 Python 脚本集，
-直接对接 https://api.hipowork.com 后端 REST API（底层与 MCP 工具同一套接口），
-通过 OAuth 授权后即可在终端完成简历导入、岗位发布、
-候选人匹配、市场分析等操作。
+<div align="center">
 
-## 安装
+# 让你的简历，被 AI 看到
+### 让机会与人才自然相遇
+
+[![PyPI](https://img.shields.io/pypi/v/hipowork-cli?color=blue)](https://pypi.org/project/hipowork-cli/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+[![OAuth 2.0](https://img.shields.io/badge/Auth-OAuth2.0-green)](https://oauth.net/2/)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+
+**官网：** [https://hipowork.com](https://hipowork.com) · [https://www.hipowork.com](https://www.hipowork.com)  
+**远程 MCP 服务：** `https://mcp.hipowork.com/mcp`  
+**API 服务端点：** `https://api.hipowork.com`
+
+</div>
+
+---
+
+## 🌟 平台理念
+
+在传统的招聘求职中，优秀的简历常常沉睡在静态文档或封闭的简历库中，被动等待死板的关键词匹配。
+
+**HiPo Work** 致力于改变这一现状：
+- **把简历沉淀为高精度语义资产**：通过 Agent 或客户端工具，求职者的专业技能、独立项目经验、工作职责与落地成果被全量结构化沉淀并生成向量。
+- **让你的简历被 AI 工具随时检索**：不管是 Claude Code、Cursor、OpenAI CodeX、Hermes Agent 还是企业招聘 Agent，都能在秒级通过工具精准检索、评估与连接候选人。
+- **让机会与人才自然相遇**：不再需要海投或盲目筛选，基于真实项目深度与核心能力，实现招聘方与求职者的双向精准触达。
+
+---
+
+## 🔗 相关生态与公开仓库
+
+HiPo Work 提供了完整的 Agent 原生招聘生态，涵盖命令行工具、MCP 服务与 Web 控制台：
+
+| 项目 / 平台 | 链接 | 说明 |
+|------------|------|------|
+| **官方网站** | [hipowork.com](https://hipowork.com) | 包含求职者中心、招聘方控制台、岗位发布与语义匹配演示 |
+| **hipowork-cli**（本项目） | [github.com/sexylin/hipowork-cli](https://github.com/sexylin/hipowork-cli) | 客户端命令行工具集（PyPI: `pip install hipowork-cli`），提供 `hipo` 与 `hipowork-cli` 终端命令 |
+| **hipo-mcp** | [github.com/sexylin/hipo-mcp](https://github.com/sexylin/hipo-mcp) | 远程 MCP 服务端，遵循 Model Context Protocol 标准，支持 OAuth 2.0 (PKCE) |
+| **MCP Registry** | `io.github.sexylin/hipo-work` | MCP 官方 Registry 认证注册服务坐标 |
+
+---
+
+## 📦 安装
 
 ```bash
-# 从 PyPI 安装（Python 3.10+）
+# 从 PyPI 安装（推荐，要求 Python 3.10+）
 pip install hipowork-cli
 
-# 可选：简历 PDF 提取依赖
+# 可选：支持本地简历 PDF 文本提取依赖
 pip install hipowork-cli[resume]
 ```
 
-安装后提供 `hipo` 和 `hipowork-cli` 两个可执行命令，二者完全等价。
+安装完成后系统提供两个完全等价的命令行入口：`hipo` 与 `hipowork-cli`。
 
-## 快速开始
+---
+
+## 🚀 快速开始
+
+### 1. 登录与授权
 
 ```bash
-# 1. 登录与授权（终端会打印授权引导并在浏览器完成邮箱验证）
-hipowork-cli login --role candidate     # 求职者登录（或: hipo login --role candidate）
-# hipowork-cli login --role employer    # 招聘方登录
+# 求职者登录（终端将打印标准引导并在浏览器完成邮箱验证）
+hipowork-cli login --role candidate     # 或: hipo login --role candidate
 
-# 2. 看授权状态 / 刷新 / 多账户
-hipo status
-hipo refresh
-hipo accounts list
-
-# 3. 用起来
-hipo match-jobs                                       # 求职者匹配岗位
-hipo resume-import --json my_resume.json              # 导入简历
-hipo publish-job --json examples/job.example.json     # 招聘方发布岗位
-hipo search "成都 Python 后端"
+# 招聘方登录
+hipowork-cli login --role employer
 ```
 
-> 提示：首次授权需要浏览器完成邮箱验证码登录；如果你已在 HiPo Work Web 端登录，授权页会直接显示确认授权，免重复输入邮箱和验证码。授权完成后 token 自动刷新，
-> 无需再手动处理。CLI 授权成功还会自动打开 Web handoff 页面并进入对应 Profile；浏览器侧只接收限时 access token，不共享 CLI 的 refresh token。token 只存在本机 `~/.hipo_mcp_tokens.json`（0600 权限）。
+> **提示**：
+> - 首次授权需要在浏览器完成邮箱验证码登录；如果你已经在 HiPo Work Web 端（[hipowork.com](https://hipowork.com)）登录过，授权页将直接显示**「确认授权」**，一键放行免重复输入验证码。
+> - 授权完成后 Token 自动刷新与持久化，存放在本机 `~/.hipo_mcp_tokens.json`（0600 权限），无需手动维护。
+> - CLI 授权成功还会自动打开 Web Handoff 页面直接进入对应的 Profile 档案页。
 
-### 开发模式（从源码运行）
+### 2. 状态检查与账户管理
+
+```bash
+hipo status          # 查看当前登录身份、Token 有效期与 Scope 权限
+hipo refresh         # 强制轮换 Access Token
+hipo accounts list   # 查看已登录的多账户（支持多邮箱、多角色随时切换）
+```
+
+### 3. 日常使用
+
+```bash
+# 求职者：根据简历智能匹配在招岗位
+hipo match-jobs
+
+# 求职者：导入结构化简历并上传本地附件
+hipo resume-import --json my_resume.json --attachment my_resume.pdf
+
+# 招聘方：发布招聘岗位
+hipo publish-job --json examples/job.example.json
+
+# 招聘方：自然语言搜索候选人
+hipo search "成都 5年经验 熟悉Solidity和Go的全栈"
+```
+
+---
+
+## 📋 命令速查表
+
+### 认证与凭据
+| 命令 | 说明 |
+|---|---|
+| `hipowork-cli login --role candidate/employer` | 统一登录入口（打印格式化引导并打开浏览器授权） |
+| `hipo authorize --role candidate/employer` | OAuth 授权（login 别名，PKCE + 邮箱验证码） |
+| `hipo status` | 查看当前 Token 状态、角色、权限与过期时间 |
+| `hipo refresh` | 强制刷新 Access Token |
+| `hipo token-sync [--refresh]` | 导出 Token 供浏览器前端调试使用（Base64 格式） |
+| `hipo accounts list/current/switch/delete` | 多账户管理（支持多个角色与邮箱多凭据隔离存储） |
+
+### 求职者（Candidate）
+| 命令 | 说明 |
+|---|---|
+| `hipo match-jobs [--json]` | 根据我的简历匹配全平台岗位，输出按匹配度排序的列表及多维度评分 |
+| `hipo resume-extract <file.pdf> [--out x.txt]` | 本地提取简历文本（支持 PDF、DOCX、TXT） |
+| `hipo resume-validate <resume.json>` | 导入前校验 JSON 结构（包括 duration_months、projects 完整性等） |
+| `hipo resume-import --json <resume.json> [--attachment file.pdf]` | **核心推荐**：直接导入本地结构化简历，支持携带原件附件存档 |
+| `hipo resume-import --text <resume.txt>` | 传入简历纯文本，走平台后端 AI 服务解析后导入 |
+
+### 招聘方（Employer）
+| 命令 | 说明 |
+|---|---|
+| `hipo publish-job --title x --text "..." [--json file]` | 发布招聘需求（支持结构化条件与面议设置） |
+| `hipo close-job <job_id>` | 关闭已发布的职位（关闭后不再被候选人检索或参与匹配） |
+| `hipo search "自然语言描述" [--max n]` | 自然语言直接检索候选人人格与经历 |
+| `hipo match-candidates --text "..." / --json cond.json / --job <id>` | 结构化多维度候选人匹配（支持技能硬过滤与向量语义检索） |
+| `hipo market --keyword python [--industry tech]` | 技能与行业人才市场供需热度分析 |
+| `hipo stats` | 平台统计概览（在招职位、人才分布等） |
+
+### 运维与端到端诊断
+| 命令 | 说明 |
+|---|---|
+| `hipo healthcheck` | 一键体检：检查 API / MCP / OAuth metadata / Embedding 全链路连通性 |
+| `hipo e2e` | 完整端到端冒烟测试：Token 校验 → REST /auth/me → MCP 会话 → 受保护工具调用 |
+
+> 任意命令均可添加 `--help` 查看完整参数；大部分命令支持 `--json` 输出结构化数据，方便与自动化脚本结合。
+
+---
+
+## 📄 简历导入的最佳实践
+
+### 1. 推荐方式：`--json`（带独立项目经历与原始附件）
+使用你本地的 LLM 或 Agent 将简历提炼为结构化 JSON（参考 `examples/resume.example.json`），重点保留：
+- **`projects`**：独立作品、开源项目、商业落地专项等（作为一等公民数据独立呈现）；
+- **`work_experiences`**：职责、成果、技术栈及精确的 `duration_months`（用于累计工作年限）；
+- **`--attachment`**：携带本地原始 PDF/Word 附件，自动上传加密存储并供招聘方预览。
+
+```bash
+hipo resume-import --json my_resume.json --attachment my_resume.pdf
+```
+
+### 2. 文本解析方式：`--text`
+如果你不想手动组织 JSON，也可以直接提取文本由后端 AI 统一解析：
+```bash
+hipo resume-extract my_resume.pdf --out resume.txt
+hipo resume-import --text resume.txt
+```
+
+---
+
+## 🛠️ 本地开发与源码运行
 
 ```bash
 git clone git@github.com:sexylin/hipowork-cli.git
 cd hipowork-cli
-python3.13 -m venv .venv
-.venv/bin/pip install -e .            # 可编辑安装，命令即 hipo
-.venv/bin/python -m unittest discover -s tests   # 运行测试
+
+python3 -m venv .venv
+.venv/bin/pip install -e .[resume]
+
+# 运行完整单元测试套件
+.venv/bin/python -m unittest discover -s tests
 ```
 
-## 命令速查
+---
 
-### 认证与令牌
-| 命令 | 说明 |
-|---|---|
-| `hipowork-cli login --role candidate/employer` | 登录/授权（引导终端与浏览器完成邮箱验证） |
-| `hipo authorize --role candidate/employer [--email x]` | OAuth 授权（login 别名，PKCE + 邮箱验证码） |
-| `hipo status` | 查看当前 token：角色/scope/过期时间 |
-| `hipo refresh` | 强制刷新 access_token |
-| `hipo token-sync [--refresh]` | 导出 token 到浏览器 localStorage（4 个 base64） |
-| `hipo accounts list/current/switch/delete` | 多账户管理（多邮箱多角色分开存） |
+## 📄 License
 
-### 求职者
-| 命令 | 说明 |
-|---|---|
-| `hipo match-jobs [--json]` | 根据我的简历匹配岗位 |
-| `hipo resume-extract <file.pdf> [--out x.txt]` | 提取简历文本（PDF/DOCX/TXT） |
-| `hipo resume-validate <resume.json>` | 导入前校验 JSON 结构 |
-| `hipo resume-import --json <resume.json>` | 校验后导入简历（推荐） |
-| `hipo resume-import --text <resume.txt>` | 走平台 AI 服务解析后导入 |
-
-### 招聘方
-| 命令 | 说明 |
-|---|---|
-| `hipo publish-job --title x --text "..." [--json file]` | 发布岗位 |
-| `hipo close-job <job_id>` | 关闭已发布的岗位（关闭后不再参与匹配） |
-| `hipo search "自然语言描述" [--max n]` | 自然语言搜索候选人 |
-| `hipo match-candidates --text "..." / --json cond.json / --job <id>` | 结构化匹配候选人 |
-| `hipo market --keyword python [--industry tech]` | 人才市场分析 |
-| `hipo stats` | 平台统计 |
-
-### 运维诊断
-| 命令 | 说明 |
-|---|---|
-| `hipo healthcheck` | 检查 API / MCP / OAuth metadata / Embedding 连通性 |
-| `hipo e2e` | 端到端冒烟：token → REST /auth/me → MCP 会话 → 工具调用 |
-
-任意命令加 `--help` 查看详细参数；大部分命令支持 `--json` 输出原始 JSON 便于脚本消费。
-
-## 简历导入两种方式
-
-1. **推荐：`--json`** — 用你自己的 LLM / Agent 把简历解析为结构化 JSON
-   （参考 `examples/resume.example.json`），本地校验通过后导入。不依赖平台 AI 服务。
-   ```bash
-   hipo resume-import --json my_resume.json
-   ```
-2. **`--text`** — 传入简历纯文本，由平台后端 AI 服务解析（需要后端配置了
-   AI_SERVICE_URL；否则会提示改用 `--json`）。
-   ```bash
-   hipo resume-extract resume.pdf --out resume.txt
-   hipo resume-import --text resume.txt
-   ```
-
-`hipo resume-validate` 会提前发现常见问题：`duration_months` 缺失
-（会导致经验年限不累计、岗位匹配经验分拿不到）、字段超长、类型错误、
-数量超限等，规则与后端 `POST /agent/import-resume` 的白名单/上限一致。
-
-## 目录结构
-
-```text
-src/hipowork_cli/
-  __init__.py               # 统一入口（console script: hipo）
-  scripts/
-    hipo_auth.py            # 共享认证库：token 仓库/刷新/API 客户端
-    hipo_authorize.py       # OAuth 授权 + 本地回调 + 统一成功页
-    hipo_token_status.py    # token 状态
-    hipo_token_refresh.py   # 强制刷新
-    hipo_token_sync.py      # token → 浏览器 localStorage
-    hipo_accounts.py        # 多账户管理
-    hipo_mcp_client.py      # 业务封装：匹配/发布/搜索/统计/导入等
-    hipo_match_jobs.py      # 求职者匹配岗位
-    hipo_publish_job.py     # 发布岗位
-    hipo_close_job.py       # 关闭岗位
-    hipo_search_candidates.py  # 搜索候选人
-    hipo_match_candidates.py   # 结构化匹配候选人
-    hipo_market.py          # 市场分析
-    hipo_stats.py           # 平台统计
-    hipo_resume_extract.py  # 简历文本提取
-    hipo_resume_validate.py # 简历 JSON 校验
-    hipo_resume_import.py   # 简历导入
-    hipo_healthcheck.py     # 服务连通性检查
-    hipo_e2e.py             # 端到端冒烟
-  templates/
-    success.html            # 统一授权成功页（深色玻璃拟态）
-  examples/
-    resume.example.json     # 结构化简历示例
-    job.example.json        # 结构化岗位示例
-tests/
-  test_hipo_accounts.py     # 多账户管理单元测试
-  test_hipo_resume_import.py  # 简历流水线单元测试
-```
-
-## 相关服务地址
-
-```text
-API:   https://api.hipowork.com        (docs: /docs)
-MCP:   https://mcp.hipowork.com/mcp
-官网:  https://hipowork.com
-```
+本项目基于 [MIT License](LICENSE) 开源。
