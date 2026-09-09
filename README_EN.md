@@ -125,7 +125,7 @@ hipo search "Chengdu 5 years experience fullstack developer familiar with Solidi
 ### Employer
 | Command | Description |
 |---|---|
-| `hipo publish-job --title x --text "..." [--json file]` | Post a job opening (supports structured criteria and negotiable salary) |
+| `hipo publish-job --title x --text "..." [--salary-currency USDT] [--json file]` | Post a job opening (supports multiple currencies CNY/USDT/USD/EUR/GBP/AUD/SGD, structured criteria, and negotiable salary) |
 | `hipo close-job <job_id>` | Close an active job opening (closed positions are excluded from candidate searches and matching) |
 | `hipo search "natural language query" [--max n]` | Search candidate profiles and experiences directly using natural language queries |
 | `hipo match-candidates --text "..." / --json cond.json / --job <id>` | Multi-dimensional candidate matching (combines hard skill filters with semantic vector search) |

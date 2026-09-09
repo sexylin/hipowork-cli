@@ -125,7 +125,7 @@ hipo search "成都 5年经验 熟悉Solidity和Go的全栈"
 ### 招聘方（Employer）
 | 命令 | 说明 |
 |---|---|
-| `hipo publish-job --title x --text "..." [--json file]` | 发布招聘需求（支持结构化条件与面议设置） |
+| `hipo publish-job --title x --text "..." [--salary-currency USDT] [--json file]` | 发布招聘需求（支持多币种 CNY/USDT/USD/EUR/GBP/AUD/SGD、结构化条件与面议设置） |
 | `hipo close-job <job_id>` | 关闭已发布的职位（关闭后不再被候选人检索或参与匹配） |
 | `hipo search "自然语言描述" [--max n]` | 自然语言直接检索候选人人格与经历 |
 | `hipo match-candidates --text "..." / --json cond.json / --job <id>` | 结构化多维度候选人匹配（支持技能硬过滤与向量语义检索） |
