@@ -8,8 +8,8 @@
 import argparse
 import sys
 
-from hipo_common import HipiError, require_py310
-from hipo_mcp_client import TokenStore, check_role, create_company, list_companies, print_json, set_default_company
+from hipo_auth import TokenStore, require_py310
+from hipo_mcp_client import HipiError, check_role, create_company, list_companies, print_json, set_default_company
 
 
 def main() -> int:
