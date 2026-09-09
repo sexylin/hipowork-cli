@@ -125,6 +125,9 @@ hipo search "Chengdu 5 years experience fullstack developer familiar with Solidi
 ### Employer
 | Command | Description |
 |---|---|
+| `hipo company create --name "name" [--desc "intro"] [--default]` | Create an employer company profile (supports setting as default) |
+| `hipo company set-default <company_id>` | Set a specific company as the default employer entity |
+| `hipo company list` | List all companies and check current default under the employer account |
 | `hipo publish-job --title x --text "..." [--salary-currency USDT] [--json file]` | Post a job opening (supports multiple currencies CNY/USDT/USD/EUR/GBP/AUD/SGD, structured criteria, and negotiable salary) |
 | `hipo close-job <job_id>` | Close an active job opening (closed positions are excluded from candidate searches and matching) |
 | `hipo search "natural language query" [--max n]` | Search candidate profiles and experiences directly using natural language queries |

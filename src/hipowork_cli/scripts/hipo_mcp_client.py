@@ -86,6 +86,30 @@ def match_jobs_for_me(store: TokenStore | None = None, account_id: str | None = 
     return data if raw else _summarize_job_matches(data)
 
 
+def create_company(company_name: str, description: str = "", is_default: bool = False,
+                   store: TokenStore | None = None, account_id: str | None = None) -> dict:
+    """招聘方：创建公司信息（POST /agent/create-company）。"""
+    token = get_access_token(store, account_id)
+    return _req("POST", "/agent/create-company", token=token, body={
+        "company_name": company_name,
+        "description": description or "",
+        "is_default": bool(is_default),
+    })
+
+
+def set_default_company(company_id: str,
+                        store: TokenStore | None = None, account_id: str | None = None) -> dict:
+    """招聘方：指定默认公司（POST /agent/set-default-company）。"""
+    token = get_access_token(store, account_id)
+    return _req("POST", "/agent/set-default-company", token=token, body={"company_id": company_id})
+
+
+def list_companies(store: TokenStore | None = None, account_id: str | None = None) -> dict:
+    """招聘方：查询名下所有公司（GET /agent/list-companies）。"""
+    token = get_access_token(store, account_id)
+    return _req("GET", "/agent/list-companies", token=token)
+
+
 def publish_job(title: str, required: list | None = None, preferred: dict | None = None,
                 raw_text: str = "", salary_min: int | None = None,
                 salary_max: int | None = None, salary_unit: str | None = "monthly",

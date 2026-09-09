@@ -125,6 +125,9 @@ hipo search "成都 5年经验 熟悉Solidity和Go的全栈"
 ### 招聘方（Employer）
 | 命令 | 说明 |
 |---|---|
+| `hipo company create --name "公司名" [--desc "简介"] [--default]` | 创建企业主体信息（支持设置默认企业） |
+| `hipo company set-default <company_id>` | 将指定企业主体设为默认企业 |
+| `hipo company list` | 查看当前招聘方名下的所有企业主体列表及默认企业 |
 | `hipo publish-job --title x --text "..." [--salary-currency USDT] [--json file]` | 发布招聘需求（支持多币种 CNY/USDT/USD/EUR/GBP/AUD/SGD、结构化条件与面议设置） |
 | `hipo close-job <job_id>` | 关闭已发布的职位（关闭后不再被候选人检索或参与匹配） |
 | `hipo search "自然语言描述" [--max n]` | 自然语言直接检索候选人人格与经历 |
