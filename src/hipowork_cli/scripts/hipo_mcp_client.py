@@ -89,6 +89,7 @@ def match_jobs_for_me(store: TokenStore | None = None, account_id: str | None = 
 def publish_job(title: str, required: list | None = None, preferred: dict | None = None,
                 raw_text: str = "", salary_min: int | None = None,
                 salary_max: int | None = None, salary_unit: str | None = "monthly",
+                salary_currency: str | None = "CNY",
                 benefits: list | None = None,
                 store: TokenStore | None = None, account_id: str | None = None) -> dict:
     """招聘方：发布结构化岗位（POST /agent/publish-job）。
@@ -107,6 +108,7 @@ def publish_job(title: str, required: list | None = None, preferred: dict | None
         "salary_min": salary_min,
         "salary_max": salary_max,
         "salary_unit": effective_unit,
+        "salary_currency": salary_currency or "CNY",
         "benefits": benefits or [],
     }
     return _req("POST", "/agent/publish-job", token=token, body=body)
