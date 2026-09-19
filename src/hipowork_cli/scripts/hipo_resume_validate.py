@@ -200,6 +200,15 @@ def validate(resume: dict, strict: bool = False) -> Report:
                 f"第 {[i + 1 for i in missing_duration]} 段工作经历缺少 duration_months，"
                 "会导致经验年限(experience_years)不累计、岗位匹配经验分(0-30)拿不到",
             )
+        # role 缺失提醒（前端显示"未填写职位"，后端会自动推断占位但建议显式提供）
+        missing_role = [i for i, w in enumerate(works[:WORK_MAX_ITEMS])
+                        if isinstance(w, dict) and not w.get("role")]
+        if missing_role:
+            report.warn(
+                "work_experiences",
+                f"第 {[i + 1 for i in missing_role]} 段工作经历缺少 role(岗位头衔)，"
+                "前端将显示后端推断的占位头衔（如'工程师'），建议显式填写以保证准确",
+            )
 
     skills = resume.get("skills") or []
     if isinstance(skills, list) and not skills:
